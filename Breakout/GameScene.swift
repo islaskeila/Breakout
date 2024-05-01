@@ -30,7 +30,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         makeLoseZone()
         makeLabels()
         
-       
+        
     }
     
     func resetGame() {
@@ -49,7 +49,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         scoreLabel.text = "Score: \(score)"
         livesLabel.text = "Lives: \(lives)"
     }
- 
+    
     func createBackground() {
         let stars = SKTexture(imageNamed: "Stars")
         for i in 0...1 {
@@ -64,6 +64,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
             starsBackground.run(moveForever)
         }
     }
+    
     func makeBall() {
         ball.removeFromParent() //remove the ball (if it exsits)
         ball = SKShapeNode(circleOfRadius: 10)
@@ -125,6 +126,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         playLabel.text = "Tap to start"
         playLabel.fontName = "Arial"
         playLabel.position = CGPoint(x: frame.midX, y: frame.midY - 50)
+        playLabel.name = "playLabel"
         addChild(playLabel)
         
         livesLabel.fontSize = 18
@@ -171,14 +173,23 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
     func didBegin(_ contact: SKPhysicsContact) {
         if contact.bodyA.node?.name == "brick" ||
             contact.bodyB.node?.name == "brick" {
-            print("You win!")
-            brick.removeFromParent()
-            ball.removeFromParent()
+            gameOver(winner: true)
         }
         if contact.bodyA.node?.name == "loseZone" ||
             contact.bodyB.node?.name == "loseZone" {
-            print("You lose!")
-            ball.removeFromParent()
+            gameOver(winner: false)
+        }
+    }
+    
+    func gameOver(winner: Bool) {
+        playingGame = false
+        playLabel.alpha = 1
+        resetGame()
+        if winner {
+            playLabel.text = "You Win! Tap to play again"
+        }
+        else {
+            playLabel.text = "You Lose! Tap to play again"
         }
     }
 }
